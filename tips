@@ -1,0 +1,25 @@
+import seaborn as sns
+from sklearn import metrics
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+#i want to load data in seaborn and predict amount of tips
+tips=sns.load_dataset('tips')
+# i convert charchter to number because Linear Reqression understands number
+tips.replace({'sex':{'Female':0,'Male':1},'smoker':{'No':0,'Yes':1},'day':{'Sun':0,"Sat":1,'Thur':2,'Fri':3},'time':{'Lunch':0,"Dinner":1}},inplace=True)
+x=tips[['total_bill','sex','smoker','day','time','size']]
+y=tips['tip']
+#train and prediction
+train_x,test_x,train_y,test_y=train_test_split(x,y,test_size=0.25,random_state=21)
+reqressor =LinearRegression()
+reqressor.fit(train_x,train_y)
+prediction = reqressor.predict(test_x)
+sns.histplot(test_y-prediction,bins=6)
+#understanding efficiency
+f=metrics.mean_absolute_percentage_error(test_y,prediction)
+d=metrics.mean_absolute_error(test_y,prediction)
+t=metrics.mean_squared_error(test_y,prediction)
+print('MAPE:',f*100)
+print('MAE:',d)
+print('MSE:',t)
+
